@@ -15,12 +15,13 @@ def call_api(input_text: str, context: str) -> str:
         with httpx.Client(timeout=30.0) as client:
             response = client.post(url, json=payload, headers=headers)
             response.raise_for_status()
-            return response.json().get("choices", [{}])[0].get("message", {}).get("content", "Error: No response")
+            return response.json().get("choices")[0].get("message").get("content")
     except httpx.HTTPError as e:
         raise HTTPException(status_code=500, detail=f"HTTP Error: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+    
+    
 def get_context() -> str:
     """สร้าง context string จากข้อความสนทนา"""
     return "\n".join(
